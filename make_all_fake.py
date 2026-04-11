@@ -1,19 +1,13 @@
 from pathlib import Path
-import os
-from dotenv import load_dotenv
 import pandas as pd
 
-load_dotenv()
-
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = Path(os.getenv("DATA_DIR", "./data"))
-DATA_DIR = (BASE_DIR / DATA_DIR).resolve()
-
+DATA_DIR = Path(__file__).resolve().parent / "data"
 FAKE_IN = DATA_DIR / "Fake.csv"
 OUT = DATA_DIR / "all_fake.csv"
 
 df = pd.read_csv(FAKE_IN)
 
+# В ISOT обычно колонка text, но на всякий
 text_col = "text" if "text" in df.columns else df.columns[0]
 
 out = pd.DataFrame({

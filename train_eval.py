@@ -1,4 +1,4 @@
-# train_eval.py
+﻿# train_eval.py
 from __future__ import annotations
 
 import sys
@@ -15,23 +15,21 @@ from transformers import pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-import os
-from dotenv import load_dotenv
-load_dotenv()
 
 # =========================
 # CONFIG
 # =========================
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = (BASE_DIR / os.getenv("DATA_DIR", "./data")).resolve()
-MODEL_DIR = (BASE_DIR / os.getenv("MODEL_DIR", "./models/fake_news_model")).resolve()
-
+DATA_DIR = BASE_DIR / "data"
 FAKE_FILENAME = "Fake.csv"
 TRUE_FILENAME = "True.csv"
 
+MODEL_DIR = BASE_DIR / "models" / "fake_news_model"
+
 MAX_TOKENS = 512
 
+# Р§С‚РѕР±С‹ РЅРµ Р¶РґР°С‚СЊ РІРµС‡РЅРѕСЃС‚СЊ: РїРѕ СЃРєРѕР»СЊРєРѕ СЃС‚СЂРѕРє Р±СЂР°С‚СЊ РёР· РєР°Р¶РґРѕРіРѕ РєР»Р°СЃСЃР° (None = РІСЃРµ)
 LIMIT_PER_CLASS: Optional[int] = 5000
 
 TEST_SIZE = 0.2
@@ -40,6 +38,7 @@ RANDOM_STATE = 42
 PIPELINE_BATCH_SIZE = 16
 PROGRESS_CHUNK_STEP = 128
 
+# Р”Р»СЏ "РїСЂРѕРІРµСЂРєРё РЅР° РёСЃС‚РѕС‡РЅРёРєРё" (Reuters-РґРµС‚РµРєС‚РѕСЂ): СЃСЂРµР·Р°РµРј РїРµСЂРІС‹Рµ N СЃРёРјРІРѕР»РѕРІ
 HEADER_CUT_CHARS = 200
 
 
@@ -58,20 +57,20 @@ def pick_text_column(df: pd.DataFrame) -> str:
     for name in candidates:
         if name in lower:
             return lower[name]
-    die(f"Не найден столбец с текстом. Колонки: {list(df.columns)}")
+    die(f"РќРµ РЅР°Р№РґРµРЅ СЃС‚РѕР»Р±РµС† СЃ С‚РµРєСЃС‚РѕРј. РљРѕР»РѕРЅРєРё: {list(df.columns)}")
 
 
 def load_csv(path: Path, y_value: int) -> pd.DataFrame:
     if not path.exists():
-        die(f"Файл не найден: {path}")
+        die(f"Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ: {path}")
 
     try:
         df = pd.read_csv(path)
     except Exception as e:
-        die(f"Не могу прочитать CSV {path}: {e}")
+        die(f"РќРµ РјРѕРіСѓ РїСЂРѕС‡РёС‚Р°С‚СЊ CSV {path}: {e}")
 
     if df.empty:
-        die(f"Пустой CSV: {path}")
+        die(f"РџСѓСЃС‚РѕР№ CSV: {path}")
 
     text_col = pick_text_column(df)
 
@@ -162,12 +161,12 @@ def main() -> None:
     true_path = DATA_DIR / TRUE_FILENAME
 
     if not MODEL_DIR.exists():
-        die(f"Модель не найдена: {MODEL_DIR.resolve()}\nСначала запусти: python download_model.py")
+        die(f"РњРѕРґРµР»СЊ РЅРµ РЅР°Р№РґРµРЅР°: {MODEL_DIR.resolve()}\nРЎРЅР°С‡Р°Р»Р° Р·Р°РїСѓСЃС‚Рё: python download_model.py")
 
     if not fake_path.exists():
-        die(f"Не найден Fake.csv: {fake_path}")
+        die(f"РќРµ РЅР°Р№РґРµРЅ Fake.csv: {fake_path}")
     if not true_path.exists():
-        die(f"Не найден True.csv: {true_path}")
+        die(f"РќРµ РЅР°Р№РґРµРЅ True.csv: {true_path}")
 
     print("[INFO] Loading datasets...")
     fake_df = load_csv(fake_path, y_value=1)
@@ -180,7 +179,7 @@ def main() -> None:
     df = pd.concat([fake_df, true_df], ignore_index=True)
     df = df.drop_duplicates(subset=["text"]).reset_index(drop=True)
     if df.empty:
-        die("После очистки не осталось данных.")
+        die("РџРѕСЃР»Рµ РѕС‡РёСЃС‚РєРё РЅРµ РѕСЃС‚Р°Р»РѕСЃСЊ РґР°РЅРЅС‹С….")
 
     print(f"[INFO] Total: {len(df)} | fake={int(df['y'].sum())} | real={int((df['y']==0).sum())}")
 
@@ -205,9 +204,9 @@ def main() -> None:
     # GPU
     device = get_device()
     if device == 0:
-        print(f"[INFO] Using GPU ✅: {torch.cuda.get_device_name(0)}")
+        print(f"[INFO] Using GPU: {torch.cuda.get_device_name(0)}")
     else:
-        print("[INFO] Using CPU ❌ (CUDA not available)")
+        print("[INFO] Using CPU (CUDA not available)")
 
     clf = pipeline(
         "text-classification",
@@ -272,3 +271,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

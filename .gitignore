@@ -152,6 +152,15 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Large model files — store on Hugging Face Hub or GitHub Releases instead
+models/
+
+# Runtime database
+data/analytics.db
+
+# Expanded datasets and experiment outputs
+data/expanded/
+
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
@@ -159,22 +168,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Local ML models
-models/
-
-# Local datasets (optional)
-# data/all_fake.csv
-
-# Local env
-.env
-
-# Streamlit
+# Streamlit and local caches
 .streamlit/
-
-# HuggingFace cache
 .cache/
 **/.cache/
-
-# Results
-metrics.txt
-results_metrics.txt
