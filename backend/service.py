@@ -18,6 +18,7 @@ from transformers import (
 )
 from transformers.utils import logging as hf_logging
 
+from .openai_explainer import generate_openai_explanation
 from .config import (
     KK_EN_DIR,
     MAX_INPUT_CHARS,
@@ -26,6 +27,7 @@ from .config import (
     RF_MODEL_PATH,
     RU_EN_DIR,
 )
+from .text_validation import ensure_valid_news_text
 from .xai import build_xai_report, extract_meta_features, short_signal_prompt_lang
 
 
@@ -278,7 +280,8 @@ class NewsAnalyzerService:
 
     def analyze(self, *, text: str, language: str = "auto") -> AnalyzeResult:
         t0 = time.perf_counter()
-        raw = self._normalize_text(text)
+        validation = ensure_valid_news_text(text)
+        raw = self._normalize_text(validation.cleaned_text)
         detected_language = self.detect_language(raw, language)
         text_for_model, translated, translation_text = self._translate(raw, detected_language)
         fake_prob_trf, real_prob_trf, token_len = self._predict_transformer(text_for_model)
@@ -315,6 +318,26 @@ class NewsAnalyzerService:
             rf_probability=rf_prob,
         )
 
+        llm_explanation = generate_openai_explanation(
+            original_text=raw,
+            detected_language=detected_language,
+            label=label,
+            fake_probability=fake_prob,
+            real_probability=real_prob,
+            xai_summary=report.detailed_summary,
+            decision_path=report.decision_path,
+            highlights=report.highlights,
+            reasons=[
+                {
+                    "type": item.reason_type,
+                    "text": item.text,
+                    "weight": round(item.weight, 3),
+                    "code": item.code,
+                }
+                for item in report.reasons
+            ],
+        )
+
         latency_ms = int((time.perf_counter() - t0) * 1000)
         explanation = {
             "probability_fake_percent": round(fake_prob * 100.0, 2),
@@ -331,6 +354,10 @@ class NewsAnalyzerService:
             "compact_codes": report.compact_codes,
             "agent_hint_min_tokens": short_signal_prompt_lang(detected_language),
             "detailed_summary": report.detailed_summary,
+            "llm_detailed_summary": llm_explanation.text,
+            "llm_model": llm_explanation.model,
+            "llm_latency_ms": llm_explanation.latency_ms,
+            "llm_error": llm_explanation.error,
             "decision_path": report.decision_path,
             "feature_snapshot": report.feature_snapshot,
         }

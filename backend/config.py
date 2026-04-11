@@ -48,6 +48,16 @@ ANALYTICS_DB_PATH = Path(_getenv("ANALYTICS_DB_PATH", default=str(DATA_DIR / "an
 MAX_MODEL_TOKENS = int(_getenv("MAX_MODEL_TOKENS", "MAX_TOKENS", default="512"))
 FAKE_CLASS_ID = int(_getenv("FAKE_CLASS_ID", default="0"))
 REAL_CLASS_ID = int(_getenv("REAL_CLASS_ID", default="1"))
+OPENAI_API_KEY = _getenv("OPENAI_API_KEY", default="")
+OPENAI_EXPLANATION_MODEL = _getenv("OPENAI_EXPLANATION_MODEL", default="gpt-5.4-mini")
+OPENAI_EXPLANATION_TIMEOUT = float(_getenv("OPENAI_EXPLANATION_TIMEOUT", default="25"))
+OPENAI_EXPLANATION_REASONING = _getenv("OPENAI_EXPLANATION_REASONING", default="low")
+OPENAI_EXPLANATION_ENABLED = _getenv("OPENAI_EXPLANATION_ENABLED", default="1").lower() not in {
+    "0",
+    "false",
+    "off",
+    "no",
+}
 
 # Hard cap protects latency and lowers token usage in inference/translation.
 MAX_INPUT_CHARS = int(_getenv("MAX_INPUT_CHARS", default="4500"))

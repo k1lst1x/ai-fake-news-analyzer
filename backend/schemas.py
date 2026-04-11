@@ -28,6 +28,10 @@ class ExplainPayload(BaseModel):
     compact_codes: List[str]
     agent_hint_min_tokens: Optional[str] = None
     detailed_summary: Optional[str] = None
+    llm_detailed_summary: Optional[str] = None
+    llm_model: Optional[str] = None
+    llm_latency_ms: Optional[int] = None
+    llm_error: Optional[str] = None
     decision_path: List[str] = Field(default_factory=list)
     feature_snapshot: Dict[str, float] = Field(default_factory=dict)
 

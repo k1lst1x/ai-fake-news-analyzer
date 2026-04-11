@@ -13,6 +13,7 @@ import streamlit as st
 
 from backend.analytics_store import AnalyticsStore
 from backend.config import ANALYTICS_DB_PATH
+from backend.text_validation import validate_news_text
 
 
 st.set_page_config(
@@ -449,6 +450,26 @@ hr {
   border-color: #ecd7bc;
 }
 
+[data-testid="stAlert"] {
+  border-radius: 14px;
+  border: 1px solid #efd58d !important;
+  background: linear-gradient(90deg, #fff9d7, #fff2b8) !important;
+  color: #5c3a18 !important;
+  box-shadow: 0 8px 16px rgba(137, 97, 25, 0.08);
+}
+
+[data-testid="stAlert"] p,
+[data-testid="stAlert"] div,
+[data-testid="stAlert"] span,
+[data-testid="stAlert"] label {
+  color: #5c3a18 !important;
+  opacity: 1 !important;
+}
+
+[data-testid="stAlert"] svg {
+  fill: #9a5f22 !important;
+}
+
 @media (max-width: 1024px) {
   .card {
     padding: 14px 16px;
@@ -660,6 +681,14 @@ def load_examples() -> Dict[str, str]:
 
 
 def _local_analyze(payload: Dict[str, Any]) -> Dict[str, Any]:
+    validation = validate_news_text(payload["text"])
+    if not validation.is_valid:
+        return {
+            "error": validation.message,
+            "error_code": validation.code,
+            "validation": validation.to_detail(),
+        }
+
     service = get_local_service()
     store = get_store()
     res = service.analyze(text=payload["text"], language=payload.get("language", "auto"))
@@ -693,9 +722,22 @@ def _local_analyze(payload: Dict[str, Any]) -> Dict[str, Any]:
 
 def analyze(payload: Dict[str, Any]) -> Dict[str, Any]:
     try:
-        r = requests.post(f"{API_BASE}/analyze", json=payload, timeout=6)
+        r = requests.post(f"{API_BASE}/analyze", json=payload, timeout=45)
         if r.ok:
             return r.json()
+        detail: Any = None
+        try:
+            detail = r.json().get("detail")
+        except Exception:
+            detail = None
+        if isinstance(detail, dict):
+            return {
+                "error": detail.get("message") or "Не удалось проанализировать текст.",
+                "error_code": detail.get("code"),
+                "validation": detail,
+            }
+        if detail:
+            return {"error": str(detail)}
     except Exception:
         pass
     return _local_analyze(payload)
@@ -769,11 +811,29 @@ def render_prediction(result: Dict[str, Any], source_text: str) -> None:
     explanation = result.get("explanation", {})
     reasons = explanation.get("reasons", [])
     detailed_summary = explanation.get("detailed_summary")
+    llm_summary = explanation.get("llm_detailed_summary")
+    llm_model = explanation.get("llm_model")
+    llm_latency_ms = explanation.get("llm_latency_ms")
+    llm_error = explanation.get("llm_error")
     decision_path = explanation.get("decision_path") or []
     feature_snapshot = explanation.get("feature_snapshot") or {}
 
-    if detailed_summary:
+    if llm_summary:
         st.markdown("### Подробное обоснование")
+        with st.container(border=True):
+            st.markdown(str(llm_summary))
+        meta = []
+        if llm_model:
+            meta.append(f"LLM: {llm_model}")
+        if llm_latency_ms is not None:
+            meta.append(f"LLM latency: {llm_latency_ms} ms")
+        if meta:
+            st.caption(" | ".join(meta))
+    elif llm_error:
+        st.caption(f"LLM explanation unavailable: {llm_error}")
+
+    if detailed_summary:
+        st.markdown("### Краткий итог XAI")
         st.markdown(
             f"<div class='card'>{html.escape(str(detailed_summary))}</div>",
             unsafe_allow_html=True,
@@ -1023,11 +1083,16 @@ def analyzer_page() -> None:
         word_count = len(clean.split()) if clean else 0
         char_count = len(clean)
         st.caption(f"Объем текста: {word_count} слов · {char_count} символов")
+        if clean and word_count < 20:
+            st.info("Для устойчивого результата вставьте хотя бы 20 слов связного текста.")
         submitted = st.form_submit_button("Анализировать", type="primary", use_container_width=True)
 
     if submitted:
-        if len(clean) < 10:
-            st.warning("Нужен текст не короче 10 символов.")
+        validation = validate_news_text(clean)
+        if not validation.is_valid:
+            st.session_state.last_result = None
+            st.session_state.last_source_text = clean
+            st.warning(validation.message or "Проверьте введенный текст.")
             return
         payload = {
             "text": clean,
@@ -1038,6 +1103,11 @@ def analyzer_page() -> None:
         }
         with st.spinner("Проверка и объяснение..."):
             result = analyze(payload)
+        if result.get("error"):
+            st.session_state.last_result = None
+            st.session_state.last_source_text = clean
+            st.warning(str(result["error"]))
+            return
         st.session_state.last_result = result
         st.session_state.last_source_text = clean
 

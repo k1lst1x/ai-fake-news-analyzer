@@ -3,7 +3,7 @@ from __future__ import annotations
 import io
 from typing import List
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 
@@ -11,6 +11,7 @@ from backend.analytics_store import AnalyticsStore
 from backend.config import ANALYTICS_DB_PATH
 from backend.schemas import AnalyzeRequest, AnalyzeResponse, SummaryResponse
 from backend.service import NewsAnalyzerService
+from backend.text_validation import TextValidationError
 
 
 app = FastAPI(
@@ -37,7 +38,10 @@ def health() -> dict:
 
 @app.post("/analyze", response_model=AnalyzeResponse)
 def analyze(req: AnalyzeRequest) -> AnalyzeResponse:
-    result = analyzer.analyze(text=req.text, language=req.language)
+    try:
+        result = analyzer.analyze(text=req.text, language=req.language)
+    except TextValidationError as exc:
+        raise HTTPException(status_code=400, detail=exc.result.to_detail()) from exc
 
     if req.store_event:
         store.log_check(
@@ -153,4 +157,3 @@ def analytics_export(
         media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=analytics_export.csv"},
     )
-
