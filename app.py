@@ -524,6 +524,616 @@ hr {
     unsafe_allow_html=True,
 )
 
+st.markdown(
+    """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap');
+
+:root {
+  --bg-main: #efe3d4;
+  --bg-soft: #f7efe6;
+  --bg-panel: #f8f1e8;
+  --bg-panel-strong: #f1e5d7;
+  --line: #d4bea3;
+  --line-soft: rgba(107, 80, 55, 0.12);
+  --ink: #2d2018;
+  --muted: #735b49;
+  --accent: #2f241d;
+  --accent-soft: #b39172;
+  --accent-fade: #dcc6af;
+  --ok: #66755d;
+  --warn: #8b5137;
+}
+
+html, body, [data-testid="stAppViewContainer"] {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(25% - 1px),
+      rgba(125, 98, 71, 0.06) calc(25% - 1px),
+      rgba(125, 98, 71, 0.06) 25%
+    ),
+    linear-gradient(180deg, #f7efe6 0%, #efe3d4 52%, #ebdece 100%);
+  color: var(--ink);
+  font-family: 'Manrope', sans-serif;
+}
+
+[data-testid="stAppViewBlockContainer"] {
+  max-width: 1380px;
+  padding: 1.45rem 1.25rem 4rem;
+}
+
+[data-testid="stHorizontalBlock"] {
+  gap: 1.18rem;
+  align-items: stretch;
+}
+
+h1, h2, h3 {
+  color: var(--ink);
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: -0.035em;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 4.4vw, 5rem);
+  line-height: 0.94;
+  margin: 0 0 0.55rem 0;
+}
+
+h2 {
+  font-size: clamp(2rem, 2.7vw, 3.25rem);
+  line-height: 0.98;
+  margin: 0 0 0.55rem 0;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 1.9vw, 2.2rem);
+  line-height: 1.02;
+}
+
+p, li {
+  line-height: 1.76;
+}
+
+.sub {
+  max-width: 840px;
+  color: var(--muted);
+  font-size: 1.01rem;
+  line-height: 1.78;
+  margin: 0.55rem 0 0;
+}
+
+.page-shell {
+  margin: 0 0 1.7rem 0;
+  padding: 0 0 1.2rem 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.page-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--muted);
+  font-size: 0.76rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+}
+
+.page-kicker::after {
+  content: "";
+  width: 72px;
+  height: 1px;
+  background: #bda389;
+}
+
+.section-gap {
+  height: 1.25rem;
+}
+
+.section-gap-lg {
+  height: 1.85rem;
+}
+
+.section-gap-sm {
+  height: 0.75rem;
+}
+
+.hero-card {
+  position: relative;
+  min-height: 470px;
+  padding: 2rem 2rem 2.25rem;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(360px 220px at 82% 18%, rgba(255,255,255,0.45), transparent 72%),
+    linear-gradient(135deg, #f5ecdf 0%, #eadccc 58%, #efe3d5 100%);
+  box-shadow: 0 28px 58px rgba(73, 49, 31, 0.12);
+}
+
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(25% - 1px),
+      rgba(117, 90, 65, 0.06) calc(25% - 1px),
+      rgba(117, 90, 65, 0.06) 25%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 118px,
+      rgba(117, 90, 65, 0.05) 118px,
+      rgba(117, 90, 65, 0.05) 119px
+    );
+  pointer-events: none;
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 164px minmax(250px, 390px) 1fr;
+  gap: 1.8rem;
+  align-items: center;
+  min-height: 395px;
+}
+
+.hero-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: stretch;
+  color: #7b624f;
+  padding: 0.15rem 0;
+}
+
+.hero-kicker {
+  font-size: 0.76rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.hero-sidecopy {
+  max-width: 118px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.hero-mark-wrap {
+  position: relative;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-mark-shadow {
+  position: absolute;
+  inset: 28px 22px 16px 18px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(152, 118, 86, 0.15), rgba(98, 78, 58, 0.03));
+  transform: translate(-18px, 18px);
+}
+
+.hero-mark-core,
+.hero-mark-outline {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: clamp(7rem, 14vw, 11rem);
+  letter-spacing: -0.08em;
+  line-height: 0.82;
+}
+
+.hero-mark-core {
+  position: relative;
+  z-index: 2;
+  min-width: 290px;
+  min-height: 280px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.18em 0.16em 0.04em;
+  background: #2f241d;
+  color: #f5ebdf;
+  border-radius: 24px;
+  box-shadow: 0 24px 36px rgba(56, 39, 27, 0.18);
+}
+
+.hero-mark-outline {
+  position: absolute;
+  z-index: 3;
+  color: transparent;
+  -webkit-text-stroke: 3px #cfb397;
+  opacity: 0.9;
+  transform: translate(16px, 12px);
+}
+
+.hero-copy {
+  max-width: 620px;
+  padding-right: 1rem;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #765d4b;
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.hero-eyebrow::after {
+  content: "";
+  width: 78px;
+  height: 1px;
+  background: #bda389;
+}
+
+.hero-title {
+  margin: 0;
+  font-size: clamp(2.8rem, 5vw, 5.25rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  max-width: 620px;
+}
+
+.hero-sub {
+  margin-top: 1rem;
+  max-width: 560px;
+  color: #705948;
+  font-size: 1rem;
+  line-height: 1.82;
+}
+
+.hero-mini-note {
+  margin-top: 1.3rem;
+  padding-top: 0.95rem;
+  max-width: 460px;
+  color: #876b55;
+  font-size: 0.92rem;
+  border-top: 1px solid rgba(122, 94, 69, 0.18);
+}
+
+.card,
+.kpi-card,
+.result-card-main,
+.result-card-side,
+.reason-item,
+.table-wrap,
+[data-testid="stForm"],
+[data-testid="stExpander"],
+[data-testid="stVerticalBlockBorderWrapper"] {
+  background: linear-gradient(180deg, #faf2e8 0%, #f2e6d8 100%) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 18px 40px rgba(78, 55, 35, 0.10);
+  margin-bottom: 10px;
+}
+
+.card {
+  padding: 1.35rem 1.45rem;
+}
+
+.card h3,
+.card h4 {
+  margin-top: 0;
+  margin-bottom: 0.55rem;
+}
+
+.kpi-card {
+  min-height: 146px;
+  padding: 1.05rem 1.1rem 1.1rem;
+  background: linear-gradient(145deg, #fbf4eb 0%, #efe0cf 100%) !important;
+}
+
+.kpi-title {
+  color: #7c6450;
+  letter-spacing: 0.16em;
+}
+
+.kpi-value {
+  color: var(--ink);
+  margin-top: 0.7rem;
+}
+
+.kpi-note {
+  color: #8e725b;
+  margin-top: 0.65rem;
+}
+
+.reason-item {
+  padding: 1rem 1rem 1.02rem;
+  margin-bottom: 0.95rem;
+  background: linear-gradient(180deg, #fbf2e7 0%, #f0e1cf 100%) !important;
+}
+
+.result-banner {
+  gap: 1.2rem;
+  margin-top: 0.35rem;
+}
+
+.result-card-main,
+.result-card-side {
+  padding: 1.25rem 1.35rem;
+  background: linear-gradient(180deg, #fbf3e9 0%, #f0e2d1 100%) !important;
+}
+
+.verdict-badge {
+  border-radius: 999px;
+  padding: 0.45rem 0.88rem;
+}
+
+.verdict-fake {
+  background: #efe1d6;
+  border-color: #c8a48a;
+  color: #7f412a;
+}
+
+.verdict-real {
+  background: #e8ece4;
+  border-color: #b8c4b1;
+  color: #54644f;
+}
+
+.confidence-label {
+  margin-top: 0.8rem;
+  color: #7d6552;
+}
+
+.meter-track {
+  height: 12px;
+  background: #e6d4bf;
+}
+
+.meter-fill {
+  background: linear-gradient(90deg, #6b5140, #c59b72);
+}
+
+.pill {
+  background: #f6eadb;
+  border: 1px solid #d8c0a4;
+  color: #725845;
+  padding: 0.38rem 0.78rem;
+}
+
+.legend-chip {
+  background: #f6eadb;
+  border: 1px solid #d7bda2;
+  color: #614636;
+}
+
+.legend-dot-real {
+  background: #677a62;
+}
+
+.legend-dot-fake {
+  background: #8b5137;
+  box-shadow: 0 0 0 2px #ead8cb;
+}
+
+.stButton > button[kind="primary"],
+[data-testid="stDownloadButton"] > button {
+  background: #2f241d !important;
+  color: #f8eee1 !important;
+  border: 1px solid #2f241d !important;
+  border-radius: 16px !important;
+  min-height: 50px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  box-shadow: 0 14px 26px rgba(56, 38, 25, 0.14);
+}
+
+.stButton > button[kind="primary"]:hover,
+[data-testid="stDownloadButton"] > button:hover {
+  background: #433127 !important;
+  border-color: #433127 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 18px 28px rgba(56, 38, 25, 0.18);
+}
+
+.stButton > button[kind="secondary"] {
+  background: rgba(255,255,255,0.18) !important;
+  color: #503a2d !important;
+  border: 1px solid #cdb393 !important;
+  border-radius: 16px !important;
+  min-height: 50px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+}
+
+.stButton > button[kind="secondary"]:hover {
+  background: #f3e5d6 !important;
+  border-color: #b99674 !important;
+  transform: translateY(-1px);
+}
+
+.nav-caption {
+  color: #745c4a;
+  font-size: 0.74rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  margin: 0 0 0.7rem 0.05rem;
+}
+
+.nav-spacer {
+  height: 1.15rem;
+}
+
+[data-testid="stWidgetLabel"] p,
+label {
+  color: #664c3b !important;
+  font-weight: 700 !important;
+}
+
+[data-baseweb="select"] span,
+[data-baseweb="select"] input,
+[data-baseweb="input"] input,
+textarea,
+textarea::placeholder,
+[data-baseweb="input"] input::placeholder {
+  color: #4e3729 !important;
+}
+
+div[data-baseweb="select"] > div,
+div[data-baseweb="input"] > div,
+textarea {
+  background: #fbf3e9 !important;
+  border: 1px solid #ccb395 !important;
+  border-radius: 16px !important;
+  color: #402c21 !important;
+  font-size: 1rem !important;
+  line-height: 1.65 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
+}
+
+textarea {
+  min-height: 280px;
+}
+
+div[data-baseweb="select"] > div:focus-within,
+div[data-baseweb="input"] > div:focus-within,
+textarea:focus {
+  border-color: #9e7a5e !important;
+  box-shadow: 0 0 0 1px #9e7a5e !important;
+}
+
+[data-testid="stForm"] {
+  padding: 1.4rem 1.45rem 1rem !important;
+  margin-top: 1.4rem;
+}
+
+[data-testid="stForm"] [data-testid="stHorizontalBlock"] {
+  gap: 1.08rem;
+}
+
+[data-testid="stForm"] [data-testid="stButton"] {
+  margin-top: 0.75rem;
+}
+
+[data-testid="stExpander"] {
+  margin: 1.1rem 0 1.45rem;
+}
+
+[data-testid="stVegaLiteChart"] > div {
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: #faf4eb;
+  box-shadow: 0 18px 34px rgba(79, 56, 36, 0.08);
+}
+
+.table-wrap {
+  background: #faf4ea !important;
+}
+
+.preview-table thead th {
+  background: #ede0d0;
+  color: #50392b;
+  padding: 0.95rem 0.85rem;
+}
+
+.preview-table tbody td {
+  padding: 0.88rem 0.85rem;
+  color: #4e3829;
+}
+
+.preview-table tbody tr:nth-child(even) {
+  background: #f4e8da;
+}
+
+[data-testid="stAlert"] {
+  margin: 0.95rem 0 1.35rem 0;
+  border-radius: 18px !important;
+  border: 1px solid #d8c095 !important;
+  background: linear-gradient(180deg, #fff6d8, #f7e8b8) !important;
+}
+
+[data-testid="stAlert"] p,
+[data-testid="stAlert"] div,
+[data-testid="stAlert"] span,
+[data-testid="stAlert"] label {
+  color: #5e4225 !important;
+}
+
+[data-testid="stVerticalBlockBorderWrapper"] {
+  margin: 0.45rem 0 0.35rem;
+  padding: 0.45rem 0.6rem;
+}
+
+[data-testid="stVerticalBlockBorderWrapper"] p,
+[data-testid="stVerticalBlockBorderWrapper"] li {
+  line-height: 1.82;
+}
+
+@media (max-width: 1100px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+    min-height: auto;
+  }
+  .hero-sidebar {
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+  }
+  .hero-sidecopy {
+    max-width: 260px;
+  }
+  .hero-copy {
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  [data-testid="stAppViewBlockContainer"] {
+    padding: 1rem 0.9rem 3rem;
+  }
+  [data-testid="stHorizontalBlock"] {
+    gap: 0.9rem;
+  }
+  .hero-card {
+    min-height: auto;
+    padding: 1.35rem 1.1rem 1.45rem;
+    border-radius: 22px;
+  }
+  .hero-mark-core {
+    min-width: 220px;
+    min-height: 210px;
+    border-radius: 20px;
+  }
+  .hero-mark-outline {
+    -webkit-text-stroke-width: 2px;
+  }
+  .page-shell {
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.9rem;
+  }
+  .card,
+  .kpi-card,
+  .result-card-main,
+  .result-card-side,
+  .reason-item,
+  [data-testid="stForm"],
+  [data-testid="stExpander"] {
+    border-radius: 18px !important;
+  }
+  .section-gap-lg {
+    height: 1.2rem;
+  }
+}
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
 
 def _resolve_api_base() -> str:
     try:
@@ -922,19 +1532,36 @@ def render_prediction(result: Dict[str, Any], source_text: str) -> None:
 
 
 def landing_page() -> None:
-    st.caption("Приветственная страница (Landing)")
     st.markdown(
         """
 <div class="hero-card">
-  <h1 class="hero-title">AI Fake News Analyzer</h1>
-  <p class="hero-sub">
-    Платформа для проверки новостей с Explainable AI: модель оценивает риск фейка, объясняет решение
-    по признакам и сохраняет аналитику для исследований и отчетности.
-  </p>
+  <div class="hero-grid">
+    <div class="hero-sidebar">
+      <div class="hero-kicker">Editorial AI system</div>
+      <div class="hero-sidecopy">Signal-led verification, XAI reasoning, LLM commentary and analytics in one calm workspace.</div>
+    </div>
+    <div class="hero-mark-wrap">
+      <div class="hero-mark-shadow"></div>
+      <div class="hero-mark-core">FN</div>
+      <div class="hero-mark-outline">FN</div>
+    </div>
+    <div class="hero-copy">
+      <div class="hero-eyebrow">AI Fake News Analyzer</div>
+      <h1 class="hero-title">Современная beige-система для проверки новостей и объяснения решений модели</h1>
+      <p class="hero-sub">
+        Интерфейс объединяет ML-классификацию, Explainable AI, LLM-обоснование и аналитический
+        дашборд в одном редакторском сценарии без визуального шума и перегруза.
+      </p>
+      <div class="hero-mini-note">
+        Подходит для демонстрации диплома, ручной проверки кейсов и накопления аналитики по языкам, типам контента и географии.
+      </div>
+    </div>
+  </div>
 </div>
 """,
         unsafe_allow_html=True,
     )
+    st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
     cta1, cta2, _ = st.columns([1.1, 1.1, 2.8])
     with cta1:
         if st.button("Перейти к проверке", type="primary", use_container_width=True):
@@ -945,6 +1572,7 @@ def landing_page() -> None:
             st.session_state.page = "Аналитический дашборд"
             st.rerun()
 
+    st.markdown("<div class='section-gap-lg'></div>", unsafe_allow_html=True)
     c1, c2 = st.columns(2)
     with c1:
         st.markdown(
@@ -975,7 +1603,17 @@ def landing_page() -> None:
             unsafe_allow_html=True,
         )
 
-    st.markdown("## Примеры запросов")
+    st.markdown("<div class='section-gap-lg'></div>", unsafe_allow_html=True)
+    st.markdown(
+        """
+<div class="page-shell">
+  <div class="page-kicker">Interactive samples</div>
+  <h2>Примеры запросов</h2>
+  <p class="sub">Ниже можно быстро прогнать достоверный и фейковый кейс, чтобы показать логику системы без ручного ввода текста.</p>
+</div>
+""",
+        unsafe_allow_html=True,
+    )
     examples = load_examples()
 
     col_a, col_b = st.columns(2)
@@ -1017,9 +1655,14 @@ def landing_page() -> None:
 
 
 def analyzer_page() -> None:
-    st.markdown("<h1>Проверка новости</h1>", unsafe_allow_html=True)
     st.markdown(
-        "<p class='sub'>Вставьте текст новости. Система вернёт вероятность «фейк/достоверная», уровень уверенности и подробное объяснение с подсветкой.</p>",
+        """
+<div class="page-shell">
+  <div class="page-kicker">Analysis workspace</div>
+  <h1>Проверка новости</h1>
+  <p class="sub">Вставьте текст новости. Система вернёт вероятность «фейк/достоверная», уровень уверенности и подробное объяснение с подсветкой.</p>
+</div>
+""",
         unsafe_allow_html=True,
     )
 
@@ -1047,6 +1690,7 @@ def analyzer_page() -> None:
             st.session_state.last_source_text = ""
             st.rerun()
 
+    st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
     with st.expander("Как получить более точный результат"):
         st.markdown(
             "- Вставляйте полный абзац или статью, а не один заголовок.\n"
@@ -1054,6 +1698,7 @@ def analyzer_page() -> None:
             "- Для спорных кейсов проверяйте первоисточники, даже если модель уверена."
         )
 
+    st.markdown("<div class='section-gap-sm'></div>", unsafe_allow_html=True)
     with st.form("analyze_form", clear_on_submit=False):
         col1, col2, col3 = st.columns([1.2, 1.2, 1.6])
         with col1:
@@ -1112,14 +1757,20 @@ def analyzer_page() -> None:
         st.session_state.last_source_text = clean
 
     if st.session_state.last_result:
+        st.markdown("<div class='section-gap-lg'></div>", unsafe_allow_html=True)
         st.markdown("### Результат анализа")
         render_prediction(st.session_state.last_result, st.session_state.last_source_text)
 
 
 def dashboard_page() -> None:
-    st.markdown("<h1>Аналитический дашборд</h1>", unsafe_allow_html=True)
     st.markdown(
-        "<p class='sub'>Статистика проверок, распределения по времени, языкам и географии, плюс экспорт для исследований.</p>",
+        """
+<div class="page-shell">
+  <div class="page-kicker">Insights & reporting</div>
+  <h1>Аналитический дашборд</h1>
+  <p class="sub">Статистика проверок, распределения по времени, языкам и географии, плюс экспорт для исследований.</p>
+</div>
+""",
         unsafe_allow_html=True,
     )
     store = get_store()
@@ -1189,6 +1840,7 @@ def dashboard_page() -> None:
         )
 
     timeline = store.timeline(days=period, languages=langs, content_types=types)
+    st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
     st.markdown("### Динамика fake/real")
     if not timeline.empty:
         st.markdown(
@@ -1247,6 +1899,7 @@ def dashboard_page() -> None:
     else:
         st.info("Пока нет данных для выбранных фильтров.")
 
+    st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
     st.markdown("### Языки и география")
     lcol, gcol = st.columns(2)
     with lcol:
@@ -1310,9 +1963,11 @@ def dashboard_page() -> None:
         if "P(fake)" in preview.columns:
             preview["P(fake)"] = pd.to_numeric(preview["P(fake)"], errors="coerce").round(3)
         cols = ["Время", "Язык", "Тип", "Страна", "Класс", "P(fake)", "Задержка, мс"]
+        st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
         st.markdown("### Последние проверки")
         _render_preview_table(preview[cols])
 
+    st.markdown("<div class='section-gap'></div>", unsafe_allow_html=True)
     st.markdown("### Экспорт данных")
     col_csv, col_json = st.columns(2)
     with col_csv:
